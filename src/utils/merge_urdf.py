@@ -571,8 +571,8 @@ if __name__ == "__main__":
     root_path = current_file_path.parent.parent
     asset_path = root_path / 'src' / 'assets'
 
-    urdf1_path = asset_path / 'urdf' / 'starlink' / 'urdf' / 'starlink.urdf'
-    urdf2_path = asset_path / 'urdf' / 'panda_bullet' / 'panda.urdf'
+    urdf1_path = asset_path / 'urdf' / '卫星1号urdf.SLDASM' / 'urdf' / '卫星1号urdf.SLDASM.urdf'
+    urdf2_path = asset_path / 'urdf' / 'starlink_space_manipulator_merged.SLDASM9' / 'starlink_space_manipulator_merged.SLDASM9.urdf'
 
     # Create merger instance
     urdf_merger = URDFMerger(urdf1_path, urdf2_path)
@@ -584,9 +584,9 @@ if __name__ == "__main__":
         urdf1_name = os.path.splitext(os.path.basename(urdf1_path))[0], 
         urdf2_name = os.path.splitext(os.path.basename(urdf2_path))[0], 
         output_name = f"{os.path.splitext(os.path.basename(urdf1_path))[0]}_combine_{os.path.splitext(os.path.basename(urdf2_path))[0]}",
-        parent_link = 'base_star_link',
-        child_link = 'base_link',
-        connection_xyz = '-0.87 1.05 0',
+        parent_link = 'base_link',
+        child_link = 'starlink_space_manipulator_base_link',
+        connection_xyz = '0 0 0',
         connection_rpy = '0 0 1.574',
         scale_robot = 0.6
     )

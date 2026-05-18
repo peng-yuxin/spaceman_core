@@ -1,6 +1,6 @@
 
 """
-Configuration for starlink_combine_qf_space_manipulator URDF model.
+Configuration for starlink_space_manipulator_merged URDF model.
 """
 from pathlib import Path
 import genesis as gs
@@ -12,17 +12,17 @@ _ROOT_PATH = _current_file_path.parent.parent
 _ASSET_PATH = _ROOT_PATH / 'src' / 'assets'
 
 _STARLINK_MANIPULATOR_URDF = (
-    _ASSET_PATH / 'urdf' / 'starlink_combine_qf_space_manipulator' 
-    / 'starlink_combine_qf_space_manipulator.urdf'
+    _ASSET_PATH / 'urdf' / 'starlink_combine_starlink_space_manipulator_merged.SLDASM9' 
+    / 'starlink_combine_starlink_space_manipulator_merged.SLDASM9.urdf'
 )
 
 FRANKA_S_Q_CONFIG = {
-    "initial_dofs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.04, 0.04, 0.04, 0.04, 0.04],
+    "initial_dofs": [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
     "control": {
-        "kp": [4500, 4500, 3500, 3500, 2000, 2000, 2000, 100, 100, 100, 100, 100],
-        "kv": [450, 450, 350, 350, 200, 200, 200, 10, 10, 10, 10, 10],
-        "force_range_min": [-87, -87, -87, -87, -12, -12, -12, -100, -100, -100, -100, -100],
-        "force_range_max": [87, 87, 87, 87, 12, 12, 12, 100, 100, 100, 100, 100],
+        "kp": [4500, 4500, 3500, 3500, 2000, 2000, 100, 100],
+        "kv": [450, 450, 350, 350, 200, 200, 10, 10],
+        "force_range_min": [-87, -87, -87, -87, -12, -12, -100, -100],
+        "force_range_max": [87, 87, 87, 87, 12, 12, 100, 100],
     }
 }
 
@@ -33,32 +33,42 @@ IK_PARAMS = {
 
 FRANKA_S_Q_PARAMS = {
     "name": "franka_merge",
-    "end_effector": "qf_space_manipulator_2F-Body_Link",
-    "base": "starlink_base_star_link",
+    "end_effector": "starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link",
+    "base": "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_base_link",
     "config": FRANKA_S_Q_CONFIG,
     "joints": (
         # "root_joint",
-        "qf_space_manipulator_Shoulder_link_1_yaw",
-        "qf_space_manipulator_Upper_arm_Link_1_roll",
-        "qf_space_manipulator_Mid_arm_Link_1_roll",
-        "qf_space_manipulator_Upper_wrist_Link_1_yaw",
-        "qf_space_manipulator_Upper_wrist_Link_2_roll",
-        "qf_space_manipulator_2F-Body_Link_pitch", 
-        # hand
-        "qf_space_manipulator_Finger1_2_Link_roll",
-        "qf_space_manipulator_Finger3_2_Link_roll", # all gripper joints mimic this
-        "qf_space_manipulator_Finger3_1_Link_roll",
-        "qf_space_manipulator_Finger1_1_Link_roll", # the only positive mutiplier
-        "qf_space_manipulator_Finger4_2_Link_roll",
-        "qf_space_manipulator_Finger4_1_Link_roll",
+        # "qf_space_manipulator_Shoulder_link_1_yaw",
+        # "qf_space_manipulator_Upper_arm_Link_1_roll",
+        # "qf_space_manipulator_Mid_arm_Link_1_roll",
+        # "qf_space_manipulator_Upper_wrist_Link_1_yaw",
+        # "qf_space_manipulator_Upper_wrist_Link_2_roll",
+        # "qf_space_manipulator_2F-Body_Link_pitch", 
+        # # hand
+        # "qf_space_manipulator_Finger1_2_Link_roll",
+        # "qf_space_manipulator_Finger3_2_Link_roll", # all gripper joints mimic this
+        # "qf_space_manipulator_Finger3_1_Link_roll",
+        # "qf_space_manipulator_Finger1_1_Link_roll", # the only positive mutiplier
+        # "qf_space_manipulator_Finger4_2_Link_roll",
+        # "qf_space_manipulator_Finger4_1_Link_roll",
+        #"root_joint",
+        "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Shoulder_link_1_yaw",
+        "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_arm_Link_1_roll",
+        "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Mid_arm_Link_1_roll",
+        "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_1_yaw",
+        "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_2_roll",
+        "starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link_yaw", 
+        "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger1_2_Link_roll",
+        "starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger2_1_Link_roll",
+       
     ),
     "motor": 6,
-    "finger": 12,
-    "gripper_revolute": [-1, 1, -1, 1, -1, -1],
-    # "finger_open": [-0.2, -0.2, -0.2, -0.2, -0.2, -0.2],
-    # "finger_close": [0.4, 0.4, 0.4, 0.4, 0.4, 0.4],
-    "finger_open": [-0.5, -0.5, -0.5, -0.5, -0.5, -0.5],
-    "finger_close": [0.5, 0.5, 0.5, 0.5, 0.5, 0.5],
+    "finger": 8,
+    "gripper_revolute": [1, 1],
+    "gripper_force_scale": 1.0,
+    
+    "finger_open": [0, 0],
+    "finger_close": [0.4, 0.4],
     "ik_params": IK_PARAMS,
     "path": _STARLINK_MANIPULATOR_URDF,
 }
@@ -91,9 +101,9 @@ FRANKA_S_Q_CAMERA = {
         "fov": 70,
         "GUI": True
     },
-    "enable_recording": False,  # 控制是否启用录制的flag
-    "end_effector_link": "qf_space_manipulator_2F-Body_Link",
-    "pos_offset": torch.tensor([0.07, 0.1, -0.1], dtype=torch.float32),
+    "enable_recording": True,  # 控制是否启用录制的flag
+    "end_effector_link": "starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link",
+    "pos_offset": torch.tensor([0.05, 0.02, -0.15], dtype=torch.float32),
     "lookat_offset": torch.tensor([0.1, -1.0, 0.0], dtype=torch.float32),
     "up_offset": torch.tensor([1.0, 0.0, 0.0], dtype=torch.float32)
 }

@@ -29,7 +29,8 @@ class SatelliteManipulator(Manipulator):
         # Logging the robot information
         self.logger.info(f"Joint dof indexes: {self.motors_dof+self.fingers_dof}")
         self.logger.info(f"Joint qs indexes: {self.motors_qs+self.fingers_qs}")
-        # self.logger.info(f"Joints all: {self.joints_info}")
+        self.logger.info(f"Joints all: {self.joints_info}")
+        self.logger.info(f"Links all: {self.links_info}")
         
 
     def initialize(self):
@@ -40,6 +41,23 @@ class SatelliteManipulator(Manipulator):
         # Initialize base and end effector's position and attitude
         self.update_state()
         self.logger.debug(f"End effector state: {self.ee_state}")
+
+        # If a base PID backend is enabled, lock its target to the actual
+        # startup pose. Otherwise the default zero setpoint keeps dragging the
+        # free-floating satellite toward one fixed direction.
+        if hasattr(self, "pid"):
+            self.pid.reset()
+            base_pose_setpoint = torch.cat(
+                [
+                    self.ee_state.link_parent_global_state.position.detach().clone(),
+                    self.ee_state.link_parent_global_state.orient.detach().clone(),
+                ]
+            )
+            self.pid.update_setpoint(base_pose_setpoint)
+            self.logger.info(
+                "Base PID setpoint initialized to current base pose: %s",
+                [round(x, 5) for x in base_pose_setpoint.detach().cpu().tolist()],
+            )
 
         self.IK = SmoothIKSolver(
             robot=self.robot, 
@@ -78,7 +96,6 @@ class SatelliteManipulator(Manipulator):
             # self.robot.set_dofs_position(position=joint_position, dofs_idx_local=self.motors_dof, zero_velocity=False) # 就是这个robot.set_qpos的问题
             # self.robot.set_qpos(qpos=joint_position, qs_idx_local=self.motors_qs, zero_velocity=False)
             self.robot.control_dofs_position(position=joint_position, dofs_idx_local=self.motors_dof) # control必须加物理引擎和刚度阻尼参数
-            self._scene.step()
 
             # Optional: Get feedback for verification
             qpos_fb = self.robot.get_qpos()
@@ -93,25 +110,24 @@ class SatelliteManipulator(Manipulator):
 
     def control_gripper(self, gripper_value):
         """
-        Control the gripper to open or close.
+        Control the gripper with force commands.
         Args:
             gripper_value: in range [0, 1]
                         1 to open gripper, 0 to close
         """
         try:         
-            gripper_value = map_to_range(gripper_value, 0, 1, self.params["finger_close"][0], self.params["finger_open"][0])
+            gripper_value = torch.as_tensor(gripper_value, dtype=self.datatype, device=self.device)
+            force_scalar = map_to_range(
+                gripper_value,
+                0.0,
+                1.0,
+                self.gripper_force_scale,
+                -self.gripper_force_scale,
+            )
+            finger_force = force_scalar * self.config_gripper_joints
+            self.logger.debug(f"gripper_value={gripper_value}, finger_force={finger_force}")
 
-            # self.logger.info(f"Gripper is set to gripper_value={gripper_value}")
-            
-            # Determine target finger state
-            finger_state = torch.tensor(gripper_value, dtype=self.datatype, device=self.device).expand(6)*self.config_gripper_joints
-            self.logger.debug(finger_state)
-
-            # Control the gripper
-            self.robot.control_dofs_position(position=finger_state, dofs_idx_local=self.fingers_dof)
-            self._scene.step()
-            # self.robot.set_qpos(qpos=finger_state, qs_idx_local=self.fingers_qs, zero_velocity=False)
-            # self.robot.set_dofs_position(joint_position=self.finger_state, dofs_idx_local=self.fingers_dof, zero_velocity=False)  #还有它的问题
+            self.robot.control_dofs_force(force=finger_force, dofs_idx_local=self.fingers_dof)
             
             _ = self.get_gripper_value()
             self.logger.debug(f"\rGripper current value={self.gripper_value}")

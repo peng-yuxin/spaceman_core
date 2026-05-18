@@ -350,7 +350,7 @@ def map_to_range(x, x_close, x_open, new_close, new_open):
         out_of_range = (x_t < x_min) | (x_t > x_max)
         try:
             if out_of_range.any().item():
-                print(f"警告: x 不在原区间 [{x_close}, {x_open}] 内")
+                print(f"警告: x 不在原区间 [{x_min.item()}, {x_max.item()}] 内")
         except Exception:
             pass
 
@@ -365,9 +365,11 @@ def map_to_range(x, x_close, x_open, new_close, new_open):
         return torch.where(is_zero, mid, mapped)
 
     # 输入验证
-    if not (min(x_close, x_open) <= x <= max(x_close, x_open)):
+    lower = min(x_close, x_open)
+    upper = max(x_close, x_open)
+    if not (lower <= x <= upper):
         # 可以选择返回边界值或抛出异常
-        print(f"警告: x={x} 不在原区间 [{x_close}, {x_open}] 内")
+        print(f"警告: x={x} 不在原区间 [{lower}, {upper}] 内")
 
     # 计算原区间和新区间的长度
     original_range = x_open - x_close

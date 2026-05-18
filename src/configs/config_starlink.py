@@ -19,7 +19,9 @@ _STARLINK_PATHS = {
 
 STARLINK_PARAMS = {
     "name": "starlink",
-    "base": "base",
+    "base": "base_star_link",
+    "grasp_link": "base_star_link",
+    "grasp_offset_local": [-0.56, 0.115, 0.3],
     "path": _STARLINK_PATHS['urdf'],
 }
 

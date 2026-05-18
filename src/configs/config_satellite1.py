@@ -23,6 +23,8 @@ _SATELLITE1_PATHS = {
 SATELLITE1_PARAMS = {
     "name": "satellite1",
     "base": "base_link",
+    "grasp_link": "base_link",
+    "grasp_offset_local": [-0.56, 0.115, 0.3],
     "path": _SATELLITE1_PATHS['urdf'],
 }
 
@@ -61,6 +63,8 @@ def _make_satellite1():
     return {
         "morph": gs.morphs.URDF(
             file=to_posix(_SATELLITE1_PATHS['urdf']),
+            pos=(-2.0, 0.0, 0.5),
+            euler=(0.0, 0.0, 180.0),
             scale=5e-1,
             fixed=False,
         ),

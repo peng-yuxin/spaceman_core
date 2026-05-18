@@ -87,7 +87,16 @@ class Manipulator(Robot):
         self.fingers_dof = motors_dof_idx[self.params["motor"] : self.params["finger"]]
 
         # gripper controller
-        self.config_gripper_joints = torch.tensor(self.params["gripper_revolute"])
+        self.config_gripper_joints = torch.tensor(
+            self.params["gripper_revolute"],
+            dtype=self.datatype,
+            device=self.device,
+        )
+        self.gripper_force_scale = torch.tensor(
+            self.params.get("gripper_force_scale", 1.0),
+            dtype=self.datatype,
+            device=self.device,
+        )
 
         self.finger_open = torch.tensor(self.params["finger_open"][0], dtype=self.datatype, device=self.device) * self.config_gripper_joints
         self.finger_close = torch.tensor(self.params["finger_close"][0], dtype=self.datatype, device=self.device) * self.config_gripper_joints
@@ -144,6 +153,24 @@ class Manipulator(Robot):
 
         # Initialize base and end effector's position and attitude
         self.update_state()
+
+        # If a base-hold PID backend is enabled, lock its setpoint to the
+        # manipulator's current base pose after the scene is built. Otherwise
+        # the default zero setpoint can pull the whole satellite away during
+        # grasping.
+        if hasattr(self, "pid"):
+            self.pid.reset()
+            base_pose_setpoint = torch.cat(
+                [
+                    self.ee_state.link_parent_global_state.position.detach().clone(),
+                    self.ee_state.link_parent_global_state.orient.detach().clone(),
+                ]
+            )
+            self.pid.update_setpoint(base_pose_setpoint)
+            self.logger.info(
+                "Base PID setpoint initialized to current base pose: %s",
+                [round(x, 5) for x in base_pose_setpoint.detach().cpu().tolist()],
+            )
 
         self.logger.info(f"End effector state initialized: {self.ee_state}")
 
@@ -261,6 +288,27 @@ class Manipulator(Robot):
         # Compute joints' angles under global frame
         qpos = self.IK.solve(position, quaternion)
         self.logger.info(f"Target command: {qpos}")
+        if qpos.shape[-1] <= max(self.motors_qs):
+            error_msg = (
+                f"IK solution shape {tuple(qpos.shape)} is too short for motor qs indexes "
+                f"{self.motors_qs}"
+            )
+            self.logger.error(error_msg)
+            raise ValueError(error_msg)
+
+        # Genesis IK returns the full qpos vector for the articulated system:
+        # - root_joint (FREE): 7 values -> [x, y, z, qw, qx, qy, qz]
+        # - arm + gripper joints: follow each joint's qs index
+        # For this robot:
+        #   qpos[0:7]   -> floating root pose
+        #   qpos[7:13]  -> 6 arm motor joints
+        #   qpos[13:19] -> 6 finger joints
+        motor_qpos = qpos[self.motors_qs]
+        self.logger.info(
+            "Motor joint target extracted from IK using qs indexes %s: %s",
+            self.motors_qs,
+            motor_qpos,
+        )
         
         # Check for NaN values
         if torch.isnan(qpos).any():
@@ -269,8 +317,7 @@ class Manipulator(Robot):
 
         # Control joints' dofs
         try:
-            self.robot.control_dofs_position(position=qpos[:-2], dofs_idx_local=self.motors_dof)
-            self._scene.step()
+            self.robot.control_dofs_position(position=motor_qpos, dofs_idx_local=self.motors_dof)
             
             # Optional: Get feedback for verification
             # qpos_fb = self.robot.get_qpos()
@@ -283,7 +330,8 @@ class Manipulator(Robot):
         
     def control_gripper(self, gripper_open):
         """
-        Control the gripper to open or close.
+        Control the gripper with force commands while keeping the input as an
+        open/close command.
         Args:
             gripper_open: bool or value that can be converted to bool
                         True to open gripper, False to close
@@ -294,18 +342,15 @@ class Manipulator(Robot):
                 gripper_open = bool(gripper_open)
                 self.logger.debug(f"Converted gripper_open to boolean: {gripper_open}")
             
-            # Determine target finger state
-            gripper_value_desired = self.finger_open if gripper_open else self.finger_close
+            # Map open/close to a signed force scalar, then project it onto the
+            # configured finger joint directions.
+            force_scalar = self.gripper_force_scale if gripper_open else -self.gripper_force_scale
+            finger_force = force_scalar * self.config_gripper_joints
             action = "opening" if gripper_open else "closing"
 
             gripper_value = self.get_gripper_value()
             self.logger.info(f"Gripper {action} with finger state: {gripper_value}")
-            # finger_force = np.array([1.0, 1.0]) if gripper_open else np.array([-1.0, -1.0])
-            # Control the gripper
-            # self.robot.control_dofs_position(finger_state, self.fingers_dof)
-            # self.robot.control_dofs_force(finger_force, self.fingers_dof)
-            self.robot.control_dofs_position(position=gripper_value_desired, dofs_idx_local=self.fingers_dof)
-            self._scene.step()
+            self.robot.control_dofs_force(force=finger_force, dofs_idx_local=self.fingers_dof)
             
             # Update current state
             # self.gripper_state = gripper_open

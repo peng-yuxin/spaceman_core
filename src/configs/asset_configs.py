@@ -16,6 +16,7 @@ _ASSET_FACTORIES = {
 
 _ASSET_CONFIG_FACTORIES = {
     "satellite": SATELLITE_PARAMS,
+    "satellite_part": SATELLITE_PART_PARAMS,
     "satellite1": SATELLITE1_PARAMS,
     "starlink": STARLINK_PARAMS,
     "franka": FRANKA_PARAMS,
@@ -24,6 +25,7 @@ _ASSET_CONFIG_FACTORIES = {
 
 _ASSET_PID_FACTORIES = {
     "satellite": SATELLITE_PID,
+    "satellite_part": SATELLITE_PART_PID,
     "satellite1": SATELLITE1_PID,
     "starlink": STARLINK_PID,
     "franka": FRANKA_PID,
@@ -32,6 +34,7 @@ _ASSET_PID_FACTORIES = {
 
 _ASSET_WristCamera_FACTORIES = {
     "satellite": SATELLITE_CAMERA,
+    "satellite_part": SATELLITE_PART_CAMERA,
     "satellite1": SATELLITE1_CAMERA,
     "starlink": STARLINK_CAMERA,
     "franka": FRANKA_CAMERA,

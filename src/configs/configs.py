@@ -14,6 +14,22 @@ _ROOT_PATH = _current_file_path.parent.parent
 _ASSET_PATH = _ROOT_PATH / 'src' / 'assets'
 ASSET_PATH_STR = str(_ASSET_PATH)
 
+SPACE_BACKGROUND_SETTINGS = {
+    "enable": True,
+    "mesh_path": str(_ASSET_PATH / 'meshes' / 'env_sphere' / 'env_sphere.obj'),
+    "texture_path": str(_ASSET_PATH / 'textures' / 'space_skybox_8k.png'),
+    "scale": 150.0,
+    "pos": (0.0, 0.0, 0.0),
+}
+
+EARTH_BACKGROUND_SETTINGS = {
+    "enable": True,
+    "mesh_path": str(_ASSET_PATH / 'meshes' / 'env_sphere' / 'env_sphere.obj'),
+    "texture_path": str(_ASSET_PATH / 'textures' / 'earth_2k.png'),
+    "scale": 60.0,
+    "pos": (0.0, 0.0, -70.0),
+}
+
 APP_SETTINGS = {
     "seed": 0,
     "backend":gs.gpu,
@@ -29,9 +45,11 @@ SCENE_SETTINGS = {
     "rigid_options": gs.options.RigidOptions(
         gravity=(0, 0, 0),
         enable_collision=True,
+        enable_joint_limit=True,
         enable_self_collision=False,
-        enable_adjacent_collision=False,
-        constraint_timeconst=0.02,
+        enable_adjacent_collision=True,
+        box_box_detection=True,
+        constraint_timeconst=0.01,
     ),
     "viewer_options": gs.options.ViewerOptions(
         camera_pos=(-1.5, -2.0, 1.5),
@@ -52,6 +70,7 @@ TPV_CAM_SETTINGS = {
         "pos": (-2.5, -3.0, 2.5),
         "lookat": (0, 0, 0.5),
         "fov": 40,
+        "far": 100.0,
         "GUI": True,
     },
     "enable_recording": False  # 控制是否启用录制的flag
@@ -59,6 +78,8 @@ TPV_CAM_SETTINGS = {
 
 __all__ = [
     'APP_SETTINGS',
+    'EARTH_BACKGROUND_SETTINGS',
     'SCENE_SETTINGS', 
+    'SPACE_BACKGROUND_SETTINGS',
     'TPV_CAM_SETTINGS',
 ]

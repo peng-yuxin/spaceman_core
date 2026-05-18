@@ -7,7 +7,13 @@ import genesis as gs
 from pathlib import Path
 current_file_path = Path(__file__).resolve().parent
 sys.path.append(str(current_file_path.parent))
-from configs.configs import APP_SETTINGS, SCENE_SETTINGS, TPV_CAM_SETTINGS
+from configs.configs import (
+    APP_SETTINGS,
+    EARTH_BACKGROUND_SETTINGS,
+    SCENE_SETTINGS,
+    SPACE_BACKGROUND_SETTINGS,
+    TPV_CAM_SETTINGS,
+)
 from sensors.timer import SimpleTimer
 from utils.utils import with_camera, generate_filename
 
@@ -42,6 +48,10 @@ class GenesisSim:
             pass
 
         self.scene = gs.Scene(**SCENE_SETTINGS)
+        self.space_background = None
+        self.earth_background = None
+        self._add_space_background()
+        self._add_earth_background()
         self.rigid = self.scene.sim.rigid_solver
         self.viewer = self.scene.viewer
         self.device = torch.cuda.current_device()
@@ -56,6 +66,51 @@ class GenesisSim:
         #         pos=(0, 0, -100.0),
         #     ),
         # )
+
+    def _add_space_background(self):
+        if not SPACE_BACKGROUND_SETTINGS["enable"]:
+            return
+
+        self.space_background = self._add_textured_sphere(
+            SPACE_BACKGROUND_SETTINGS,
+            name="space_background",
+            double_sided=True,
+        )
+
+    def _add_earth_background(self):
+        if not EARTH_BACKGROUND_SETTINGS["enable"]:
+            return
+
+        self.earth_background = self._add_textured_sphere(
+            EARTH_BACKGROUND_SETTINGS,
+            name="earth_background",
+            double_sided=False,
+        )
+
+    def _add_textured_sphere(self, settings, name: str, double_sided: bool):
+        texture = gs.textures.ImageTexture(
+            image_path=settings["texture_path"],
+            encoding="srgb",
+        )
+        return self.scene.add_entity(
+            morph=gs.morphs.Mesh(
+                file=settings["mesh_path"],
+                pos=settings["pos"],
+                scale=settings["scale"],
+                fixed=True,
+                collision=False,
+                visualization=True,
+                decimate=False,
+                convexify=False,
+            ),
+            material=gs.materials.Rigid(gravity_compensation=1.0),
+            surface=gs.surfaces.Plastic(
+                diffuse_texture=texture,
+                emissive_texture=texture,
+                double_sided=double_sided,
+            ),
+            name=name,
+        )
     
     """
     Properties

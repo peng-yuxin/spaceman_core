@@ -1,0 +1,314 @@
+<?xml version="1.0" ?>
+<robot name="starlink_combine_starlink_space_manipulator_merged.SLDASM9">
+  <link name="starlink_base_star_link">
+    <inertial>
+      <origin xyz="0.064043 0.049818 0.075117" rpy="0 0 0"/>
+      <mass value="365.27"/>
+      <inertia ixx="166.05" ixy="0.9609" ixz="-0.9195" iyy="43.737" iyz="0.18316" izz="207.92"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/base_star_link.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1"/>
+        <texture filename="./textures/1.png"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/base_star_link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="starlink_panel_Link">
+    <inertial>
+      <origin xyz="0.18387 4.5116E-05 0.0089121" rpy="0 0 0"/>
+      <mass value="146.07"/>
+      <inertia ixx="45.09" ixy="7.5802E-12" ixz="-2.6455E-06" iyy="9.2979" iyz="-4.89E-13" izz="54.377"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/panel_Link.STL"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.79216 0.81961 0.93333 1"/>
+        <texture filename="./textures/5.png"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/panel_Link.STL"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_panel" type="fixed">
+    <origin xyz="3.1501 0.12613 0.143" rpy="0 0 0"/>
+    <parent link="starlink_base_star_link"/>
+    <child link="starlink_panel_Link"/>
+    <axis xyz="0 0 0"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_base_link">
+    <inertial>
+      <origin xyz="-0.005452319549678795 0.01352569354086888 -0.005111549577823878" rpy="0 0 0"/>
+      <mass value="1.8706118743398377"/>
+      <inertia ixx="0.007467320114736839" ixy="1.2870205704557798e-19" ixz="4.8369816452956824e-20" iyy="0.00804465475500867" iyz="-7.530832750871344e-20" izz="0.007467320114736839"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_base_link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_base_link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Shoulder_link_1">
+    <inertial>
+      <origin xyz="-0.00023968304735746138 -0.060003944516827196 -0.104543642906766" rpy="0 0 0"/>
+      <mass value="1.115227908255559"/>
+      <inertia ixx="0.004078852994206362" ixy="0.00027072522509861264" ixz="5.416193259241034e-06" iyy="0.002384085257455175" iyz="-4.4069988597427256e-05" izz="0.0034212772919847974"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Shoulder_link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Shoulder_link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Shoulder_link_1_yaw" type="revolute">
+    <origin xyz="-0.00545232 -0.039 -0.00511152" rpy="1.5708 -0.15574 3.1416"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_base_link"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Shoulder_link_1"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_arm_Link_1">
+    <inertial>
+      <origin xyz="0.24126380488332178 -0.41787916358071675 -0.1021065138513474" rpy="0 0 0"/>
+      <mass value="1.0914693171278795"/>
+      <inertia ixx="0.030226790461284358" ixy="0.016341722511757806" ixz="7.238129186412958e-09" iyy="0.011356774717081918" iyz="1.336153641440799e-08" izz="0.03893269859549875"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Upper_arm_Link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Upper_arm_Link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_arm_Link_1_roll" type="revolute">
+    <origin xyz="0.0 -0.12 -0.108" rpy="1.5708 0.90646 1.5708"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Shoulder_link_1"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_arm_Link_1"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-2" upper="1.5" effort="0" velocity="0"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Mid_arm_Link_1">
+    <inertial>
+      <origin xyz="-0.0002436316658646078 0.19063336173666298 0.00931990530814218" rpy="0 0 0"/>
+      <mass value="0.3404927488633228"/>
+      <inertia ixx="0.010389541875001464" ixy="4.150447724718352e-06" ixz="-2.8030442314982317e-10" iyy="0.00039044807213866884" iyz="-1.955100823130793e-06" izz="0.01046540880069661"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Mid_arm_Link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Mid_arm_Link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Mid_arm_Link_1_roll" type="revolute">
+    <origin xyz="0.3599999999998038 -0.6235382907247319 0.0" rpy="-3.14159265358979 0 0.828250280535091"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_arm_Link_1"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Mid_arm_Link_1"/>
+    <axis xyz="0 0 -1"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_1">
+    <inertial>
+      <origin xyz="-0.00024000219883308897 -0.12093952681821299 -0.001300235131869984" rpy="0 0 0"/>
+      <mass value="0.21487045846349798"/>
+      <inertia ixx="0.00012862253530927228" ixy="-5.902792123996572e-07" ixz="-2.4681269357750304e-07" iyy="0.00015663814040845275" iyz="2.047004504773311e-07" izz="0.0001241351606967135"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Upper_wrist_Link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Upper_wrist_Link_1.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_1_yaw" type="revolute">
+    <origin xyz="-0.000300931099661472 0.41207618622806336 0.00930062888592516" rpy="0 -0.0763876794035917 3.14159265358979"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Mid_arm_Link_1"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_1"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_2">
+    <inertial>
+      <origin xyz="5.071825013303058e-08 0.050899123177417856 -0.003093944350533456" rpy="0 0 0"/>
+      <mass value="0.22402833776116632"/>
+      <inertia ixx="0.0007851470862130279" ixy="1.0287308464990843e-10" ixz="-7.338024031674003e-10" iyy="0.00017288023681497468" iyz="-1.6234178749594696e-07" izz="0.0008230163268883753"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Upper_wrist_Link_2.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Upper_wrist_Link_2.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_2_roll" type="revolute">
+    <origin xyz="0.0 -0.180123813771936 0.0" rpy="-0.0158640776811277 -0.0317448426184613 -2.67805461574742"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_1"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_2"/>
+    <axis xyz="0 0 1"/>
+    <limit lower="-2.5" upper="1.8" effort="0" velocity="0"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link">
+    <inertial>
+      <origin xyz="7.973618209097279e-05 -0.0737472871810986 8.47071166391268e-05" rpy="0 0 0"/>
+      <mass value="0.4451718127013236"/>
+      <inertia ixx="0.00027824159482722744" ixy="-7.556233268025805e-07" ixz="-2.938945711745991e-05" iyy="0.0004200432740228201" iyz="2.7767625023980745e-07" izz="0.00039371695491784224"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink__space_manipulator_2F-Body_Link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="0.792156862745098 0.819607843137255 0.933333333333333 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink__space_manipulator_2F-Body_Link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link_yaw" type="revolute">
+    <origin xyz="0.0 0.20906999999999998 -0.00322878" rpy="-3.1416 0.93592 0"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Upper_wrist_Link_2"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link"/>
+    <axis xyz="0 -1 0"/>
+    <limit lower="-3.14" upper="3.14" effort="0" velocity="0"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger1_2_Link">
+    <inertial>
+      <origin xyz="-0.07702786869649439 0.0012803095755828959 0.12459318166768199" rpy="0 0 0"/>
+      <mass value="0.035426712495936305"/>
+      <inertia ixx="1.068249884638273e-05" ixy="4.4737204033331015e-08" ixz="1.2146452151721457e-06" iyy="9.96684894253566e-06" iyz="2.2484857424220888e-07" izz="4.330276151928655e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Finger1_2_Link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Finger1_2_Link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger1_2_Link_roll" type="prismatic">
+    <origin xyz="-0.12101999999999999 -0.065496 -0.028806" rpy="-1.5708 0.22747 -3.1416"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger1_2_Link"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="0.0" upper="0.04" effort="20" velocity="0.2"/>
+  </joint>
+  <link name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger2_1_Link">
+    <inertial>
+      <origin xyz="-0.07702786996517161 0.00128030984247114 0.12459318975866279" rpy="0 0 0"/>
+      <mass value="0.03542670543806849"/>
+      <inertia ixx="1.0682494506655683e-05" ixy="4.4737445201473224e-08" ixz="1.2146446632128557e-06" iyy="9.966845039259395e-06" iyz="2.2484607384214467e-07" izz="4.330276472667279e-06"/>
+    </inertial>
+    <visual>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Finger2_1_Link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+      <material name="">
+        <color rgba="1 1 1 1"/>
+      </material>
+    </visual>
+    <collision>
+      <origin xyz="0 0 0" rpy="0 0 0"/>
+      <geometry>
+        <mesh filename="./meshes/starlink_space_manipulator_Finger2_1_Link.STL" scale="0.6 0.6 0.6"/>
+      </geometry>
+    </collision>
+  </link>
+  <joint name="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger2_1_Link_roll" type="prismatic">
+    <origin xyz="0.12519 -0.065496 0.0297714" rpy="1.5708 -0.22747 0"/>
+    <parent link="starlink_space_manipulator_merged.SLDASM9_starlink__space_manipulator_2F-Body_Link"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_Finger2_1_Link"/>
+    <axis xyz="-1 0 0"/>
+    <limit lower="0.0" upper="0.04" effort="20" velocity="0.2"/>
+  </joint>
+  <joint name="starlink_starlink_space_manipulator_merged.SLDASM9_connection_joint" type="fixed">
+    <parent link="starlink_base_star_link"/>
+    <child link="starlink_space_manipulator_merged.SLDASM9_starlink_space_manipulator_base_link"/>
+    <origin xyz="-0.1 1.05 0.2" rpy="-1.574 0 -1.574"/>
+  </joint>
+</robot>

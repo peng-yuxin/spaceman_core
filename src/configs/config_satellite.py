@@ -21,7 +21,15 @@ _SATELLITE_PATHS = {
 SATELLITE_PARAMS = {
     "name": "satellite",
     "base": "base_link",
+    "grasp_link": "base_link",
+    "grasp_offset_local": [-0.56, 0.115, 0.3],
     "path": _SATELLITE_PATHS['urdf'],
+}
+
+SATELLITE_PART_PARAMS = {
+    "name": "satellite_part",
+    "base": "base_link",
+    "path": _SATELLITE_PATHS['battery_urdf'],
 }
 
 SATELLITE_PID = {
@@ -55,10 +63,36 @@ SATELLITE_CAMERA = {
     "enable_recording": False  # 控制是否启用录制的flag
 }
 
+SATELLITE_PART_PID = {
+    "name": "satellite_part",
+    "enable_pid": False,
+    "P": [0, 0, 0, 0, 0, 0],
+    "I": [0, 0, 0, 0, 0, 0],
+    "D": [0, 0, 0, 0, 0, 0],
+    "setpoint": [0, 0, 0, 0, 0, 0],
+    "dt": 0.01,
+    "limits": [None, None, None, None, None, None],
+}
+
+SATELLITE_PART_CAMERA = {
+    "name": "satellite_part",
+    "wrist_camera": False,
+    "camera": {
+        "res": (640, 480),
+        "pos": (0.0, 0.0, 0.0),
+        "lookat": (0.0, 0.0, 0.0),
+        "fov": 40,
+        "GUI": False,
+    },
+    "enable_recording": False,
+}
+
 def _make_satellite():
     return {
         "morph": gs.morphs.URDF(
             file=to_posix(_SATELLITE_PATHS['urdf']),
+            pos=(-2.0, 0.0, 0.5),
+            euler=(0.0, 0.0, 180.0),
             scale=5e-1,
             # merge_fixed_links=False,
             fixed=False,
@@ -74,9 +108,9 @@ def _make_satellite_part():
             file=to_posix(_SATELLITE_PATHS['battery_urdf']),
             pos=(-1.1, 0.3, 1.0),
             euler=(0.0, 90.0, 0.0),
-            scale=5e-1,
+            scale=1.5e-1,
             merge_fixed_links=False,
-            fixed=False,
+            fixed=True,
         ),
         "material": gs.materials.Rigid(
             gravity_compensation=1.0,
@@ -85,8 +119,11 @@ def _make_satellite_part():
 
 __all__ = [
     'SATELLITE_PARAMS',
+    'SATELLITE_PART_PARAMS',
     'SATELLITE_PID',
+    'SATELLITE_PART_PID',
     'SATELLITE_CAMERA',
+    'SATELLITE_PART_CAMERA',
     '_make_satellite',
     '_make_satellite_part',
 ]

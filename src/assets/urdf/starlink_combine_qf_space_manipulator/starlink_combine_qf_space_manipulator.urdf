@@ -1,5 +1,19 @@
 <?xml version="1.0" ?>
 <robot name="starlink_combine_qf_space_manipulator">
+  <material name="starlink_satellite_body">
+    <color rgba="0.79216 0.81961 0.93333 1"/>
+    <texture filename="./textures/1.png"/>
+  </material>
+  <material name="starlink_solar_panel">
+    <color rgba="0.12941 0.21961 0.47843 1"/>
+    <texture filename="./textures/5.png"/>
+  </material>
+  <material name="space_manipulator_body">
+    <color rgba="0.92 0.92 0.95 1"/>
+  </material>
+  <material name="space_manipulator_gripper">
+    <color rgba="0.23 0.23 0.26 1"/>
+  </material>
   <link name="starlink_base_star_link">
     <inertial>
       <origin xyz="0.064043 0.049818 0.075117" rpy="0 0 0"/>
@@ -11,9 +25,8 @@
       <geometry>
         <mesh filename="./meshes/base_star_link.STL"/>
       </geometry>
-      <material name="">
-        <color rgba="0.79216 0.81961 0.93333 1"/>
-        <texture filename="./textures/1.png"/>
+      <material name="starlink_satellite_body">
+        
       </material>
     </visual>
     <collision>
@@ -34,9 +47,8 @@
       <geometry>
         <mesh filename="./meshes/panel_Link.STL"/>
       </geometry>
-      <material name="">
-        <color rgba="0.79216 0.81961 0.93333 1"/>
-        <texture filename="./textures/5.png"/>
+      <material name="starlink_solar_panel">
+        
       </material>
     </visual>
     <collision>
@@ -63,9 +75,7 @@
       <geometry>
         <mesh filename="./meshes/base_link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_body"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -85,9 +95,7 @@
       <geometry>
         <mesh filename="./meshes/Shoulder_link_1.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_body"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -114,9 +122,7 @@
       <geometry>
         <mesh filename="./meshes/Upper_arm_Link_1.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_body"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -143,9 +149,7 @@
       <geometry>
         <mesh filename="./meshes/Mid_arm_Link_1.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_body"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -172,9 +176,7 @@
       <geometry>
         <mesh filename="./meshes/Upper_wrist_Link_1.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_body"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -201,9 +203,7 @@
       <geometry>
         <mesh filename="./meshes/Upper_wrist_Link_2.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_body"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -230,9 +230,7 @@
       <geometry>
         <mesh filename="./meshes/2F-Body_Link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_gripper"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -259,9 +257,7 @@
       <geometry>
         <mesh filename="./meshes/Finger1_2_Link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_gripper"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -289,9 +285,7 @@
       <geometry>
         <mesh filename="./meshes/Finger3_2_Link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_gripper"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -318,9 +312,7 @@
       <geometry>
         <mesh filename="./meshes/Finger4_2_Link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_gripper"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -348,9 +340,7 @@
       <geometry>
         <mesh filename="./meshes/Finger3_1_Link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_gripper"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -378,9 +368,7 @@
       <geometry>
         <mesh filename="./meshes/Finger4_1_Link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_gripper"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
@@ -408,9 +396,7 @@
       <geometry>
         <mesh filename="./meshes/Finger1_1_Link.STL" scale="0.6 0.6 0.6"/>
       </geometry>
-      <material name="">
-        <color rgba="1 1 1 1"/>
-      </material>
+      <material name="space_manipulator_gripper"/>
     </visual>
     <collision>
       <origin xyz="0 0 0" rpy="0 0 0"/>
