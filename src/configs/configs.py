@@ -60,7 +60,7 @@ SCENE_SETTINGS = {
         show_world_frame=True,
         visualize_mpm_boundary=False,
     ),
-    "show_viewer": True,
+    "show_viewer": False,
     "show_FPS": False,
 }
 
@@ -73,7 +73,7 @@ TPV_CAM_SETTINGS = {
         "far": 100.0,
         "GUI": True,
     },
-    "enable_recording": False  # 控制是否启用录制的flag
+    "enable_recording": True  # 控制是否启用录制的flag
 }
 
 __all__ = [
