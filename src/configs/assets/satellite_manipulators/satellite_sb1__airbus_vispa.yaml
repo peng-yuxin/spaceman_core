@@ -1,0 +1,76 @@
+id: satellite_sb1__airbus_vispa
+kind: satellite_manipulator
+urdf: ../../../assets/registered_library/combinations/satellite_sb1__airbus_vispa.urdf
+components:
+  satellite: satellite_sb1
+  manipulator: airbus_vispa
+links:
+  base: base_link
+morph:
+  spawn:
+    position:
+    - 13.0
+    - 0.0
+    - 0.0
+    euler:
+    - 0.0
+    - 0.0
+    - 0.0
+  fixed: true
+  merge_fixed_links: false
+  collision: false
+  scale: 1.0
+material:
+  gravity_compensation: 1.0
+pid:
+  enable_pid: false
+cameras:
+  wrist:
+    camera:
+      res:
+      - 84
+      - 84
+      pos:
+      - 0
+      - 0
+      - 0
+      lookat:
+      - 1
+      - 0
+      - 0
+      fov: 60
+      GUI: false
+    mount_link: vispa_Link_6
+  base:
+    camera:
+      res:
+      - 84
+      - 84
+      pos:
+      - 0
+      - 0
+      - 0
+      lookat:
+      - 1
+      - 0
+      - 0
+      fov: 82
+      GUI: false
+    mount_link: vispa_Link_0
+parameters:
+  components:
+    satellite: satellite_sb1
+    manipulator: airbus_vispa
+  calibration:
+    status: rotary_gripper_unvalidated
+    pending:
+    - grasp_site
+    - initial_task_pose
+    - tcp
+    - pid
+    - camera_extrinsics
+  grasp_site_status: candidate_not_grasp_validated
+  asset_status: geometry_candidate
+  task_ready: false
+manipulator:
+  pid_apply_link: base_link

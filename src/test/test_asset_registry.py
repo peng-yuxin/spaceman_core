@@ -14,10 +14,7 @@ from configs.registry import (
 from configs.schema import ManipulatorSpec, SatelliteManipulatorSpec, SatelliteSpec
 
 
-FLEET_SATELLITES = {
-    "artificial2", "design", "gps", "legacy10", "satellite_2",
-    "satellite_4", "satellite_5", "satellite_8", "station", "uydu",
-}
+FLEET_SATELLITES = {'artificial2', 'catch01', 'design', 'satellite_11', 'satellite_model1', 'legacy10', 'solidworks_satellite', 'satellite_8', 'gps', 'artificial1', 'satellite_17', 'satellite_16', 'satellite_9', 'navstar', 'satellite_12', 'satellite_15', 'sputnik', 'satellite_5', 'satellite_14', 'satellite_2', 'satellite_sb1', 'uydu', 'satellite_6', 'satellite_4', 'scifi', 'satellite_13', 'station'}
 FLEET_MANIPULATORS = {"airbus_vispa", "starlink_sldasm9"}
 FLEET_COMBINATIONS = {
     f"{satellite}__{manipulator}"
@@ -139,9 +136,12 @@ def test_starlink_manipulator_components_are_composed_and_overridable():
     assert combined.pid == arm.pid
     assert combined.tcp == arm.tcp
     assert combined.reference_pose == arm.reference_pose
-    assert combined.gripper.closed_position == 0.4
-    assert combined.control.force_min[-2:] == (-100, -100)
-    assert combined.control.force_max[-2:] == (100, 100)
+    assert combined.gripper.joint_names == (
+        "angular_joint_1", "angular_joint_tip_1", "angular_joint_2", "angular_joint_tip_2"
+    )
+    assert combined.gripper.closed_position == 1.0
+    assert combined.control.force_min[-4:] == (-2, -2, -2, -2)
+    assert combined.control.force_max[-4:] == (2, 2, 2, 2)
     assert arm.camera.base.mount_link == "starlink_space_manipulator_base_link"
     assert combined.camera.base.mount_link == "base_link"
     assert combined.pid_apply_link == "base_link"

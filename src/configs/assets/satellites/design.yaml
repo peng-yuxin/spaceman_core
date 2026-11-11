@@ -1,18 +1,20 @@
-extends: ../_profiles/satellite.yaml
-id: design
-urdf: ../../../assets/urdf/satellites/design/satellite.urdf
-grasp_sites:
-  - {id: default, link: design_mount, position: [0.0, 0.0, 0.0]}
-
+kind: satellite
+links:
+  base: base_link
 morph:
   spawn:
-    position: [-2.0, 0.0, 0.5]
-    euler: [0.0, 0.0, -90.0]
+    position:
+    - -2.0
+    - 0.0
+    - 0.5
+    euler:
+    - 0.0
+    - 0.0
+    - -90.0
   scale: 0.7
   fixed: false
   collision: true
   visualization: true
-  #links_to_keep: [base_star_cylinder_link]
   convexify: true
   decompose_object_error_threshold: 0.0
   coacd:
@@ -20,10 +22,48 @@ morph:
     max_convex_hull: -1
     resolution: 10000
     preprocess_mode: auto
-
+material:
+  gravity_compensation: 1.0
+pid:
+  enable_pid: false
+cameras: {}
+id: design
+urdf: ../../../assets/registered_library/satellites/design/satellite.urdf
+grasp_sites:
+- id: body_surface_candidate
+  link: base_link
+  position:
+  - 0.26368193436445714
+  - 0.52
+  - 0.0
+  quaternion:
+  - 4.329780281177467e-17
+  - 0.7071067811865476
+  - -4.329780281177467e-17
+  - 0.7071067811865476
 mount_site:
   link: design_mount
-  position: [0.0, 0.0, 0.0]
+  position:
+  - 0.0
+  - 0.0
+  - 0.0
+  euler:
+  - 0.0
+  - 0.0
+  - 0.0
 parameters:
-  calibration: {status: provisional, pending: [grasp_site, pid, camera_extrinsics]}
+  calibration:
+    status: inspection_only
+    pending:
+    - grasp_site
+    - initial_task_pose
+    - tcp
+    - pid
+    - camera_extrinsics
   mount_source: assets/urdf/satellites/design/mount_config.json
+  components:
+    satellite: design
+    manipulator: null
+  grasp_site_status: candidate_not_grasp_validated
+  asset_status: geometry_candidate
+  task_ready: false

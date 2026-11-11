@@ -1,18 +1,20 @@
-extends: ../_profiles/satellite.yaml
-id: satellite_8
-urdf: ../../../assets/urdf/satellites/satellite_8/satellite.urdf
-grasp_sites:
-  - {id: default, link: satellite_8_mount, position: [0.0, 0.0, 0.0]}
-
+kind: satellite
+links:
+  base: base_link
 morph:
   spawn:
-    position: [-2.0, 0.0, 0.5]
-    euler: [0.0, 0.0, 90.0]
+    position:
+    - -2.0
+    - 0.0
+    - 0.5
+    euler:
+    - 0.0
+    - 0.0
+    - 90.0
   scale: 0.7
   fixed: false
   collision: true
   visualization: true
-  #links_to_keep: [base_star_cylinder_link]
   convexify: true
   decompose_object_error_threshold: 0.0
   coacd:
@@ -20,11 +22,48 @@ morph:
     max_convex_hull: -1
     resolution: 10000
     preprocess_mode: auto
-
-  
+material:
+  gravity_compensation: 1.0
+pid:
+  enable_pid: false
+cameras: {}
+id: satellite_8
+urdf: ../../../assets/registered_library/satellites/satellite_8/satellite.urdf
+grasp_sites:
+- id: body_surface_candidate
+  link: base_link
+  position:
+  - 0.15477028499931625
+  - -0.178627828679634
+  - 0.5965685106964815
+  quaternion:
+  - 0.44954533096477955
+  - -0.42583823830121165
+  - -0.5458104024363832
+  - 0.5645013682893253
 mount_site:
   link: satellite_8_mount
-  position: [0.0, 0.0, 0.0]
+  position:
+  - 0.0
+  - 0.0
+  - 0.0
+  euler:
+  - 0.0
+  - 0.0
+  - 0.0
 parameters:
-  calibration: {status: provisional, pending: [grasp_site, pid, camera_extrinsics]}
+  calibration:
+    status: inspection_only
+    pending:
+    - grasp_site
+    - initial_task_pose
+    - tcp
+    - pid
+    - camera_extrinsics
   mount_source: assets/urdf/satellites/satellite_8/mount_config.json
+  components:
+    satellite: satellite_8
+    manipulator: null
+  grasp_site_status: candidate_not_grasp_validated
+  asset_status: geometry_candidate
+  task_ready: false

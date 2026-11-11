@@ -1,13 +1,41 @@
 id: satellite_2__starlink_sldasm9
 kind: satellite_manipulator
-urdf: ../../../assets/urdf/combinations/satellite_2__starlink_sldasm9.urdf
-components: {satellite: satellite_2, manipulator: starlink_sldasm9}
-links: {base: base_link}
+urdf: ../../../assets/registered_library/combinations/satellite_2__starlink_sldasm9.urdf
+components:
+  satellite: satellite_2
+  manipulator: starlink_sldasm9
+links:
+  base: base_link
 morph:
-  spawn: {position: [0.5, 0.0, 0.0], euler: [0.0, 0.0, 180.0]}
+  spawn:
+    position:
+    - 0.5
+    - 0.0
+    - 0.0
+    euler:
+    - 0.0
+    - 0.0
+    - 180.0
   scale: 0.7
   fixed: false
   merge_fixed_links: false
-manipulator: {pid_apply_link: base_link}
+manipulator:
+  pid_apply_link: base_link
 cameras:
-  base: {mount_link: base_link}
+  base:
+    mount_link: base_link
+parameters:
+  components:
+    satellite: satellite_2
+    manipulator: starlink_sldasm9
+  calibration:
+    status: rotary_gripper_unvalidated
+    pending:
+    - grasp_site
+    - initial_task_pose
+    - tcp
+    - pid
+    - camera_extrinsics
+  grasp_site_status: candidate_not_grasp_validated
+  asset_status: geometry_candidate
+  task_ready: false

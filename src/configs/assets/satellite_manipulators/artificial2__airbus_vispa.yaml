@@ -1,16 +1,42 @@
 id: artificial2__airbus_vispa
 kind: satellite_manipulator
-urdf: ../../../assets/urdf/combinations/artificial2__airbus_vispa.urdf
-components: {satellite: artificial2, manipulator: airbus_vispa}
-links: {base: base_link}
+urdf: ../../../assets/registered_library/combinations/artificial2__airbus_vispa.urdf
+components:
+  satellite: artificial2
+  manipulator: airbus_vispa
+links:
+  base: base_link
 morph:
-  spawn: {position: [1, 0.0, 0.0], euler: [90.0, 0.0, 45.0]}
+  spawn:
+    position:
+    - 1
+    - 0.0
+    - 0.0
+    euler:
+    - 90.0
+    - 0.0
+    - 45.0
   scale: 0.7
   fixed: false
   merge_fixed_links: false
-manipulator: {pid_apply_link: base_link}
+manipulator:
+  pid_apply_link: base_link
 cameras:
-  base: {mount_link: base_link}
+  base:
+    mount_link: base_link
 parameters:
   capture_capability: no_gripper_defined
-  calibration: {status: provisional, pending: [tcp, reference_pose, camera_extrinsics, pid]}
+  calibration:
+    status: rotary_gripper_unvalidated
+    pending:
+    - grasp_site
+    - initial_task_pose
+    - tcp
+    - pid
+    - camera_extrinsics
+  components:
+    satellite: artificial2
+    manipulator: airbus_vispa
+  grasp_site_status: candidate_not_grasp_validated
+  asset_status: geometry_candidate
+  task_ready: false
