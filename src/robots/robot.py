@@ -12,7 +12,7 @@ sys.path.append(str(current_file_path.parent))
 from envs.genesis_env import GenesisSim
 from configs.asset_configs import get_asset, get_configs, get_pid, get_wrist_camera
 from configs.registry import build_genesis_asset, registry
-from configs.schema import SatelliteSpec, SceneCameraSpec
+from configs.schema import BaseAssetSpec, SatelliteSpec, SceneCameraSpec
 from configs.configs import TPV_CAM_SETTINGS
 from sensors.batched_mounted_camera import BatchedMountedCamera
 from sensors.batched_wrist_camera import BatchedWristCamera
@@ -36,9 +36,9 @@ class Robot:
         backends=None,
     ):
         explicit_asset_spec = asset_spec is not None
-        if asset_spec is not None and not isinstance(asset_spec, SatelliteSpec):
+        if asset_spec is not None and not isinstance(asset_spec, BaseAssetSpec):
             raise TypeError(
-                f"Robot requires SatelliteSpec, got {type(asset_spec).__name__}"
+                f"Robot requires BaseAssetSpec, got {type(asset_spec).__name__}"
             )
         if asset_spec is not None and name not in (None, "franka", asset_spec.asset_id):
             raise ValueError(

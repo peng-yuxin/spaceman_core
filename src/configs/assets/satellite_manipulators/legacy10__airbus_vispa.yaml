@@ -1,0 +1,16 @@
+id: legacy10__airbus_vispa
+kind: satellite_manipulator
+urdf: ../../../assets/urdf/combinations/legacy10__airbus_vispa.urdf
+components: {satellite: legacy10, manipulator: airbus_vispa}
+links: {base: base_link}
+morph:
+  spawn: {position: [0.5, 0.0, 0.0], euler: [0.0, 0.0, 90.0]}
+  scale: 0.7
+  fixed: false
+  merge_fixed_links: false
+manipulator: {pid_apply_link: base_link}
+cameras:
+  base: {mount_link: base_link}
+parameters:
+  capture_capability: no_gripper_defined
+  calibration: {status: provisional, pending: [tcp, reference_pose, camera_extrinsics, pid]}

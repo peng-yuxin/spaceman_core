@@ -102,7 +102,8 @@ budget is 700 control steps = 21 s; the training task's stock budget remains
   the damping (Kd) have to be derived from the inertia, and Kd additionally has
   to stay inside the torque limit - a D term that saturates turns the loop into
   a permanent +/-4 deg rocking limit cycle. See the derivation comment above
-  the ``pid`` section in configs/assets/franka_merge.yaml.
+  the ``pid`` section in
+  configs/assets/satellite_manipulators/franka_merge.yaml.
 * The final attitude equals the reset attitude. The attitude PID still has to
   reject translation/arm coupling and bring angular velocity back to zero.
 

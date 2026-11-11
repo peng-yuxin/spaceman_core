@@ -39,7 +39,9 @@ def _deep_merge(base: Mapping[str, Any], override: Mapping[str, Any]) -> dict[st
 
 
 def _load_yaml_with_extends(
-    config_path: Path, loading: tuple[Path, ...] = ()
+    config_path: Path,
+    loading: tuple[Path, ...] = (),
+    component_paths: Mapping[str, Path] | None = None,
 ) -> Mapping[str, Any]:
     config_path = config_path.resolve()
     if config_path in loading:
@@ -48,14 +50,61 @@ def _load_yaml_with_extends(
     with config_path.open("r", encoding="utf-8") as stream:
         raw = _mapping(yaml.safe_load(stream), str(config_path))
     parent_value = raw.get("extends")
-    if parent_value is None:
-        return raw
-    parent_path = Path(str(parent_value))
-    if not parent_path.is_absolute():
-        parent_path = config_path.parent / parent_path
-    parent = _load_yaml_with_extends(parent_path, (*loading, config_path))
-    override = {key: value for key, value in raw.items() if key != "extends"}
-    return _deep_merge(parent, override)
+    if parent_value is not None:
+        parent_path = Path(str(parent_value))
+        if not parent_path.is_absolute():
+            parent_path = config_path.parent / parent_path
+        parent = _load_yaml_with_extends(
+            parent_path, (*loading, config_path), component_paths
+        )
+        override = {key: value for key, value in raw.items() if key != "extends"}
+        raw = _deep_merge(parent, override)
+
+    components = _mapping(raw.get("components", {}), "components")
+    satellite_id = str(components.get("satellite", "")).strip()
+    if satellite_id:
+        satellite_path = _component_path(
+            config_path, satellite_id, component_paths
+        )
+        satellite_raw = _load_yaml_with_extends(
+            satellite_path, (*loading, config_path), component_paths
+        )
+        if satellite_raw.get("kind") != "satellite":
+            raise ValueError(f"Component {satellite_id!r} must have kind 'satellite'")
+    manipulator_id = str(components.get("manipulator", "")).strip()
+    if manipulator_id:
+        manipulator_path = _component_path(
+            config_path, manipulator_id, component_paths
+        )
+        manipulator_raw = _load_yaml_with_extends(
+            manipulator_path, (*loading, config_path), component_paths
+        )
+        if manipulator_raw.get("kind") != "manipulator":
+            raise ValueError(
+                f"Component {manipulator_id!r} must have kind 'manipulator'"
+            )
+        inherited = {
+            key: manipulator_raw[key]
+            for key in ("material", "manipulator", "pid", "cameras")
+            if key in manipulator_raw
+        }
+        raw = _deep_merge(inherited, raw)
+    return raw
+
+
+def _component_path(
+    config_path: Path,
+    component_id: str,
+    component_paths: Mapping[str, Path] | None,
+) -> Path:
+    if component_paths is not None:
+        try:
+            return component_paths[component_id]
+        except KeyError as exc:
+            raise ValueError(
+                f"Unknown component {component_id!r} referenced by {config_path}"
+            ) from exc
+    return config_path.parent / f"{component_id}.yaml"
 
 
 def _mapping(data: Any, field_name: str) -> Mapping[str, Any]:
@@ -72,9 +121,13 @@ def _tuple(data: Any, field_name: str) -> tuple[Any, ...]:
 
 def load_asset_spec(
     path: str | Path,
+    *,
+    component_paths: Mapping[str, Path] | None = None,
 ) -> SatelliteSpec | ManipulatorSpec | SatelliteManipulatorSpec:
     config_path = Path(path).resolve()
-    raw = _load_yaml_with_extends(config_path)
+    raw = _load_yaml_with_extends(
+        config_path, component_paths=component_paths
+    )
 
     asset_id = str(raw.get("id", "")).strip()
     urdf_value = Path(str(raw.get("urdf", "")))
@@ -108,6 +161,7 @@ def load_asset_spec(
     known_keys = {
         "id", "kind", "urdf", "links", "morph", "material", "pid",
         "cameras", "grasp_sites", "mount_site", "parameters", "manipulator",
+        "components",
     }
     unknown = sorted(set(raw) - known_keys)
     if unknown:
@@ -141,11 +195,18 @@ def load_asset_spec(
         pid=_load_pid(raw.get("pid", {})),
         camera=_load_cameras(asset_id, raw.get("cameras", {})),
         grasp_sites=tuple(grasp_sites),
-        parameters=dict(_mapping(raw.get("parameters", {}), "parameters")),
+        parameters={
+            **dict(_mapping(raw.get("parameters", {}), "parameters")),
+            **({"components": dict(raw["components"])} if raw.get("components") else {}),
+        },
     )
     kind = str(raw.get("kind", ""))
+    if kind != "satellite" and grasp_sites:
+        raise ValueError(f"Asset kind {kind!r} must not define satellite grasp_sites")
+    if kind != "satellite" and raw.get("mount_site") is not None:
+        raise ValueError(f"Asset kind {kind!r} must not define a satellite mount_site")
     mount_site = None
-    if kind in {"satellite", "satellite_manipulator"}:
+    if kind == "satellite":
         mount_raw = _mapping(raw.get("mount_site", {}), "mount_site")
         mount_site = MountSiteSpec(
             link=str(mount_raw.get("link", "")),
@@ -222,7 +283,7 @@ def load_asset_spec(
     )
     if kind == "manipulator":
         return ManipulatorSpec(**manipulator_common)
-    return SatelliteManipulatorSpec(**manipulator_common, mount_site=mount_site)
+    return SatelliteManipulatorSpec(**manipulator_common)
 
 
 def _load_pid(data: Any) -> PIDSpec:

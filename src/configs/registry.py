@@ -6,6 +6,8 @@ from copy import deepcopy
 from pathlib import Path
 from typing import Iterable
 
+import yaml
+
 from configs.loaders import load_asset_spec
 from configs.schema import (
     BaseAssetSpec,
@@ -31,8 +33,13 @@ class AssetRegistry:
     def __contains__(self, asset_id: object) -> bool:
         return asset_id in self._specs
 
-    def load(self, path: str | Path) -> RegisteredAssetSpec:
-        spec = load_asset_spec(path)
+    def load(
+        self,
+        path: str | Path,
+        *,
+        component_paths: dict[str, Path] | None = None,
+    ) -> RegisteredAssetSpec:
+        spec = load_asset_spec(path, component_paths=component_paths)
         self.register(spec)
         return spec
 
@@ -52,8 +59,32 @@ class AssetRegistry:
         )
 
     def load_directory(self, directory: str | Path) -> None:
-        for path in sorted(Path(directory).glob("*.yaml")):
-            self.load(path)
+        directory = Path(directory).resolve()
+        paths = [
+            path
+            for path in sorted(directory.rglob("*.yaml"))
+            if not any(
+                part.startswith("_")
+                for part in path.relative_to(directory).parts
+            )
+        ]
+        component_paths: dict[str, Path] = {}
+        for path in paths:
+            with path.open("r", encoding="utf-8") as stream:
+                raw = yaml.safe_load(stream)
+            if not isinstance(raw, dict):
+                raise ValueError(f"{path} must contain a YAML mapping")
+            asset_id = str(raw.get("id", "")).strip()
+            if not asset_id:
+                raise ValueError(f"{path} must define a non-empty asset id")
+            if asset_id in component_paths:
+                raise ValueError(
+                    f"Duplicate asset id {asset_id!r} in {component_paths[asset_id]} "
+                    f"and {path}"
+                )
+            component_paths[asset_id] = path
+        for path in paths:
+            self.load(path, component_paths=component_paths)
 
 
 def build_genesis_morph(spec: BaseAssetSpec, **overrides):

@@ -1,0 +1,29 @@
+extends: ../_profiles/satellite.yaml
+id: design
+urdf: ../../../assets/urdf/satellites/design/satellite.urdf
+grasp_sites:
+  - {id: default, link: design_mount, position: [0.0, 0.0, 0.0]}
+
+morph:
+  spawn:
+    position: [-2.0, 0.0, 0.5]
+    euler: [0.0, 0.0, -90.0]
+  scale: 0.7
+  fixed: false
+  collision: true
+  visualization: true
+  #links_to_keep: [base_star_cylinder_link]
+  convexify: true
+  decompose_object_error_threshold: 0.0
+  coacd:
+    threshold: 0.05
+    max_convex_hull: -1
+    resolution: 10000
+    preprocess_mode: auto
+
+mount_site:
+  link: design_mount
+  position: [0.0, 0.0, 0.0]
+parameters:
+  calibration: {status: provisional, pending: [grasp_site, pid, camera_extrinsics]}
+  mount_source: assets/urdf/satellites/design/mount_config.json

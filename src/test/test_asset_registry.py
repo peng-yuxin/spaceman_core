@@ -53,7 +53,7 @@ def test_fleet_configs_reference_real_urdf_names_and_meshes():
 
         assert spec.base_link in links
         assert all(site.link in links for site in spec.grasp_sites)
-        if isinstance(spec, SatelliteSpec):
+        if type(spec) is SatelliteSpec:
             assert spec.mount_site is not None
             assert spec.mount_site.link in links
         if isinstance(spec, (ManipulatorSpec, SatelliteManipulatorSpec)):
@@ -123,6 +123,30 @@ def test_franka_merge_spec_preserves_existing_configuration():
     assert camera["rl_obs"] == {}
 
 
+def test_starlink_manipulator_components_are_composed_and_overridable():
+    arm = get_spec("starlink_sldasm9")
+    combined = get_spec("artificial2__starlink_sldasm9")
+
+    assert isinstance(arm, ManipulatorSpec)
+    assert isinstance(combined, SatelliteManipulatorSpec)
+    assert combined.parameters["components"] == {
+        "satellite": "artificial2",
+        "manipulator": "starlink_sldasm9",
+    }
+    assert combined.grasp_sites == ()
+    assert not hasattr(combined, "mount_site")
+    assert combined.control == arm.control
+    assert combined.pid == arm.pid
+    assert combined.tcp == arm.tcp
+    assert combined.reference_pose == arm.reference_pose
+    assert combined.gripper.closed_position == 0.4
+    assert combined.control.force_min[-2:] == (-100, -100)
+    assert combined.control.force_max[-2:] == (100, 100)
+    assert arm.camera.base.mount_link == "starlink_space_manipulator_base_link"
+    assert combined.camera.base.mount_link == "base_link"
+    assert combined.pid_apply_link == "base_link"
+
+
 def test_legacy_dicts_are_independent_copies():
     first = get_legacy_pid("franka_merge")
     first["P"][0] = -1
@@ -162,3 +186,77 @@ cameras: {}
 
     assert isolated_registry.list_ids() == ["new_satellite"]
     assert isolated_registry.get("new_satellite").urdf == urdf.resolve()
+
+
+def test_registry_discovers_nested_configs_and_resolves_components(tmp_path):
+    satellites = tmp_path / "satellites"
+    manipulators = tmp_path / "manipulators"
+    combinations = tmp_path / "satellite_manipulators"
+    satellites.mkdir()
+    manipulators.mkdir()
+    combinations.mkdir()
+
+    satellite_urdf = satellites / "target.urdf"
+    satellite_urdf.write_text("<robot name='target'/>", encoding="utf-8")
+    (satellites / "target.yaml").write_text(
+        """
+id: target
+kind: satellite
+urdf: target.urdf
+links: {base: base_link}
+grasp_sites:
+  - {id: default, link: base_link, position: [0, 0, 0]}
+mount_site: {link: base_link, position: [0, 0, 0]}
+""".strip(),
+        encoding="utf-8",
+    )
+    arm_urdf = manipulators / "arm.urdf"
+    arm_urdf.write_text("<robot name='arm'/>", encoding="utf-8")
+    (manipulators / "arm.yaml").write_text(
+        """
+id: arm
+kind: manipulator
+urdf: arm.urdf
+links: {base: arm_base}
+manipulator:
+  base_link: arm_base
+  end_effector_link: tool
+  arm_joints: [joint]
+  tcp: {link: tool, position: [0, 0, 0]}
+  reference_pose:
+    link: tool
+    joint: joint
+    position: [0, 0, 0]
+    quaternion: [1, 0, 0, 0]
+  control:
+    initial_dofs: [0]
+    kp: [1]
+    kv: [1]
+    force_min: [-1]
+    force_max: [1]
+  gripper: {joint_names: [], revolute: [], contact_links: []}
+pid: {enable_pid: true}
+""".strip(),
+        encoding="utf-8",
+    )
+    combined_urdf = combinations / "target__arm.urdf"
+    combined_urdf.write_text("<robot name='target__arm'/>", encoding="utf-8")
+    (combinations / "target__arm.yaml").write_text(
+        """
+id: target__arm
+kind: satellite_manipulator
+urdf: target__arm.urdf
+components: {satellite: target, manipulator: arm}
+links: {base: base_link}
+""".strip(),
+        encoding="utf-8",
+    )
+
+    isolated_registry = AssetRegistry()
+    isolated_registry.load_directory(tmp_path)
+
+    combined = isolated_registry.get("target__arm")
+    assert isolated_registry.list_ids() == ["arm", "target", "target__arm"]
+    assert isinstance(combined, SatelliteManipulatorSpec)
+    assert combined.manipulator_base_link == "arm_base"
+    assert combined.pid.enabled is True

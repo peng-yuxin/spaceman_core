@@ -360,7 +360,9 @@ class ManipulatorSpec(BaseAssetSpec):
 
 
 @dataclass(frozen=True)
-class SatelliteManipulatorSpec(SatelliteSpec):
+class SatelliteManipulatorSpec(BaseAssetSpec):
+    """A satellite and manipulator already assembled in one URDF."""
+
     manipulator_base_link: str = ""
     end_effector_link: str = ""
     pid_apply_link: str | None = None
